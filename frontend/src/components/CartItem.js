@@ -1,32 +1,24 @@
-import React from "react";
+import React, { useMemo } from "react";
 
-function CartItem({ item }) {
+function CartItem({ item, onIncrease, onDecrease }) {
+  const totalPrice = useMemo(() => {
+    return item.price * item.quantity;
+  }, [item.price, item.quantity]);
+
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "16px",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        padding: "16px",
-        maxWidth: "500px",
-      }}
-    >
-      <img
-        src={item.image}
-        alt={item.name}
-        width="120"
-        height="120"
-        style={{ objectFit: "cover", borderRadius: "8px" }}
-      />
+    <div style={{ border: "1px solid #ddd", padding: "16px", marginBottom: "16px" }}>
+      <h3>{item.name}</h3>
+      <p>{item.price.toLocaleString()}원</p>
+
       <div>
-        <h3>{item.name}</h3>
-        <p>가격: {item.price.toLocaleString()}원</p>
-        <p>수량: {item.quantity}개</p>
+        <button onClick={() => onDecrease(item.id)}>-</button>
+        <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+        <button onClick={() => onIncrease(item.id)}>+</button>
       </div>
+
+      <p>총 금액: {totalPrice.toLocaleString()}원</p>
     </div>
   );
 }
 
-export default CartItem;
+export default React.memo(CartItem);
