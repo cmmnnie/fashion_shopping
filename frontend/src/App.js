@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CartItem from "./components/CartItem";
+import CartList from "./components/CartList";
 
 function App() {
   const [items, setItems] = useState([
@@ -37,25 +37,60 @@ function App() {
     );
   };
 
-  const totalPrice = items.reduce(
+  const handleRemove = (id) => {
+    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  };
+
+  const productsTotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
+  const shippingFee = productsTotal >= 100000 || productsTotal === 0 ? 0 : 3000;
+  const finalTotal = productsTotal + shippingFee;
+
+  const handleCheckout = () => {
+    alert("결제 모듈이 연결될 예정입니다.");
+  };
+
   return (
-    <div style={{ padding: "24px" }}>
+    <div style={{ padding: "24px", maxWidth: "800px", margin: "0 auto" }}>
       <h1>장바구니</h1>
 
-      {items.map((item) => (
-        <CartItem
-          key={item.id}
-          item={item}
-          onIncrease={handleIncrease}
-          onDecrease={handleDecrease}
-        />
-      ))}
+      <CartList
+        items={items}
+        onIncrease={handleIncrease}
+        onDecrease={handleDecrease}
+        onRemove={handleRemove}
+      />
 
-      <h2>총 금액: {totalPrice.toLocaleString()}원</h2>
+      <div
+        style={{
+          marginTop: "24px",
+          padding: "16px",
+          border: "1px solid #ddd",
+          borderRadius: "8px",
+        }}
+      >
+        <h2>결제 금액</h2>
+        <p>상품 총액: {productsTotal.toLocaleString()}원</p>
+        <p>배송비: {shippingFee.toLocaleString()}원</p>
+        <p>
+          <strong>최종 결제 금액: {finalTotal.toLocaleString()}원</strong>
+        </p>
+
+        <button
+          onClick={handleCheckout}
+          disabled={items.length === 0}
+          style={{
+            marginTop: "12px",
+            padding: "10px 16px",
+            cursor: items.length === 0 ? "not-allowed" : "pointer",
+          }}
+        >
+          결제하기
+        </button>
+      </div>
     </div>
   );
 }
