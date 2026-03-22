@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CartList from "./components/CartList";
+import PaymentModal from "./components/PaymentModal";
 
 function App() {
   const [items, setItems] = useState([
@@ -18,6 +19,8 @@ function App() {
       image: "https://via.placeholder.com/120",
     },
   ]);
+
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
   const handleIncrease = (id) => {
     setItems((prevItems) =>
@@ -46,11 +49,17 @@ function App() {
     0
   );
 
-  const shippingFee = productsTotal >= 100000 || productsTotal === 0 ? 0 : 3000;
+  const shippingFee =
+    productsTotal >= 100000 || productsTotal === 0 ? 0 : 3000;
+
   const finalTotal = productsTotal + shippingFee;
 
   const handleCheckout = () => {
-    alert("결제 모듈이 연결될 예정입니다.");
+    setIsPaymentOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsPaymentOpen(false);
   };
 
   return (
@@ -91,6 +100,14 @@ function App() {
           결제하기
         </button>
       </div>
+
+      <PaymentModal
+        isOpen={isPaymentOpen}
+        onClose={handleCloseModal}
+        productsTotal={productsTotal}
+        shippingFee={shippingFee}
+        finalTotal={finalTotal}
+      />
     </div>
   );
 }
